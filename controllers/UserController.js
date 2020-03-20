@@ -51,7 +51,7 @@ class UserController {
                         message: 'user already exists'
                     })
                 } else {
-                    User.create(newUser)
+                    return User.create(newUser)
                         .then(newUser => {
                             let payload = {
                                 id: newUser.id,
