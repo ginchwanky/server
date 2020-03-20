@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "postgre",
-    "password": "postgre",
+    "username": "postgres",
+    "password": "postgres",
     "database": "socialRent",
     "host": "127.0.0.1",
     "dialect": "postgres",
