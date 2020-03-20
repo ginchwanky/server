@@ -3,7 +3,7 @@ const { Event, User, UserEvent } = require('../models')
 class EventController {
     static createEvent(req, res, next) {
         console.log(req.body);
-        const currentUserId = 1
+        const currentUserId = req.decoded.id
         Event.create({
             name: req.body.name,
             statusEvent: 'pending',
@@ -16,7 +16,6 @@ class EventController {
             res.status(201).json(data)
         })
         .catch(next)
-        
     }
     static updateEvent(req, res, next) {
         Event.update({
