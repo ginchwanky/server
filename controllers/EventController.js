@@ -65,18 +65,6 @@ class EventController {
         .catch(next)
     }
 
-    static getEvent( req, res, next){
-        UserEvent.findAll({
-            include: [User, Event],
-            where:{
-                EventId: req.params.id
-            }
-        })
-        .then( data =>{
-            res.status(200).json(data)
-        })
-        .catch(next) 
-    }
 }
 
 module.exports = EventController
