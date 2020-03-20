@@ -14,7 +14,7 @@ class EventController {
 
     }
     static deleteEvent(req, res, next) {
-
+        res.send('boby botak')
     }
 }
 
