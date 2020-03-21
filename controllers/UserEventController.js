@@ -4,9 +4,9 @@ class EventController {
 
     static createUserEvent(req, res, next) {
       const currentUserId = req.decoded.id
-        // const currentUserId = 1
+      
+        let tanggal = new Date(req.body.date)
         console.log(req.body, '0787070', currentUserId);
-        // butuh tanggal
         UserEvent.findOrCreate({
             where:{
                 UserId: currentUserId,
@@ -14,11 +14,11 @@ class EventController {
                 statusApplicant: false,
                 statusPayment: false,
                 payment: req.body.payment,
-                date: req.body.date
-            }
+                date: tanggal,
+            },
         })
         .then( data =>{
-            // console.log(data, 'ini hasil data');
+            console.log(data[1], 'ini hasil data');
             if(data[0].id){
                 res.status(201).json(data)
 
@@ -43,7 +43,7 @@ class EventController {
           payment: req.body.payment
         },{ where:{
             EventId: req.params.EventId,
-            UserId: currentUserId
+            UserId: req.body.UserId
         }, returning: true
         })
         .then( data =>{
@@ -65,6 +65,8 @@ class EventController {
     }
 
     static getEvent( req, res, next){
+        console.log(req.params.EventId);
+        
         UserEvent.findAll({
             include: [User, Event],
             where:{

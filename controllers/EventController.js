@@ -2,7 +2,7 @@ const { Event, User, UserEvent } = require('../models')
 
 class EventController {
     static createEvent(req, res, next) {
-        console.log(req.body);
+        // console.log(req.body);
         const currentUserId = req.decoded.id
         Event.create({
             name: req.body.name,
