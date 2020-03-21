@@ -4,7 +4,7 @@
   "description": "server side",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=development jest --runInBand --coverage",
+    "test": "NODE_ENV=development jest --runInBand --coverage --detectOpenHandles",
     "dev": "NODE_ENV=development nodemon bin/http.js"
   },
   "repository": {
