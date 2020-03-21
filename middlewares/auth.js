@@ -17,21 +17,12 @@ authentication = (req, res, next) => {
                 })
             }
         })
-        .catch(err => {
-            next(err)
-        })
+        .catch(next)
 }
 
 authorization = (req, res, next) => {
     Event.findOne({ where: { id: req.params.id } })
-    .then(event => {
-        if (!event) {
-            next({
-                status: 404,
-                name: 'Not Found',
-                message: 'event does not exists'
-            })
-        } else {
+        .then(event => {
             if (event.UserId == req.decoded.id) {
                 next()
             } else {
@@ -41,11 +32,8 @@ authorization = (req, res, next) => {
                     message: 'you are not authorized'
                 })
             }
-        }
-    })
-    .catch(err => {
-        next(err)
-    })
+        })
+        .catch(next)
 }
 
 module.exports = { authentication, authorization }

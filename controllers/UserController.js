@@ -35,9 +35,7 @@ class UserController {
                     })
                 }
             })
-            .catch(err => {
-                next(err)
-            })
+            .catch(next)
     }
     static register(req, res, next) {
         let { name, email, password, age, gender, bio } = req.body
@@ -73,9 +71,7 @@ class UserController {
                         })
                 }
             })
-            .catch(err => {
-                next(err)
-            })
+            .catch(next)
     }
 }
 

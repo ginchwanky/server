@@ -4,7 +4,6 @@ const EventController = require('../controllers/EventController')
 const { authentication, authorization } = require('../middlewares/auth')
 
 router.get('/', EventController.findAllEvent)
-router.get('/userevent/:id', EventController.getEvent)
 router.get('/:id', EventController.findOne)
 router.post('/', authentication, EventController.createEvent)
 router.put('/:id', authentication, authorization, EventController.updateEvent)
