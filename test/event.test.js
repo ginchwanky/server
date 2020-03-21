@@ -9,7 +9,7 @@ const Op = sequelize.Sequelize.Op
 let access_token
 let id_event
 
-describe('User Routes', () => {
+describe('Events Routes', () => {
     beforeAll(done => {
         User.create({
             name: "dummy",
@@ -200,5 +200,19 @@ describe('User Routes', () => {
                 })
         })
     })
+
+    describe('Successful delete an event', () => {
+      test(`should return array of events`, (done) => {
+          request(app)
+              .delete(`/events/${id_event}`)
+              .set('access_token', access_token)
+              .end((err, response) => {
+                  expect(err).toBe(null)
+                  expect(response.body).toEqual(1)
+                  expect(response.status).toBe(200);
+                  done()
+              })
+      })
+  })
 
 })

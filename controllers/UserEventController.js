@@ -3,25 +3,38 @@ const { Event, User, UserEvent } = require('../models')
 class EventController {
 
     static createUserEvent(req, res, next) {
-      // const currentUserId = req.currentUserId
-        const currentUserId = 1
-        console.log(req.body);
-        
-        UserEvent.create({
-            UserId: currentUserId,
-            EventId: req.body.EventId,
-            statusApplicant: false,
-            statusPayment: false,
-            payment: req.body.payment,
+      const currentUserId = req.decoded.id
+        // const currentUserId = 1
+        console.log(req.body, '0787070', currentUserId);
+        // butuh tanggal
+        UserEvent.findOrCreate({
+            where:{
+                UserId: currentUserId,
+                EventId: req.body.EventId,
+                statusApplicant: false,
+                statusPayment: false,
+                payment: req.body.payment,
+                date: req.body.date
+            }
         })
         .then( data =>{
-            res.status(201).json(data)
+            // console.log(data, 'ini hasil data');
+            if(data[0].id){
+                res.status(201).json(data)
+
+            }else{
+                next({
+                    name: 'you have reservation at the same date',
+                    status: 500
+                })
+            }
+            
         })
         .catch(next)    
     }
 
     static updateEvent(req, res, next) {
-      // const currentUserId = req.currentUserId
+      // const currentUserId = req.decoded.id
       const currentUserId = 1
       
       UserEvent.update({
