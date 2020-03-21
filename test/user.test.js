@@ -158,7 +158,6 @@ describe('User Routes', () => {
                 })
                 .end((err, response) => {
                     expect(err).toBe(null)
-                    console.log('=======', response.body)
                     expect(response.body).toHaveProperty('message', 'Bad Request')
                     expect(response.body).toHaveProperty('errors', ['password can not be null'])
                     expect(response.body.status).toBe(400)
