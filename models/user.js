@@ -3,7 +3,6 @@ const { hashPassword } = require('../helpers/hashPassword')
 
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.Sequelize.Model
-  const Op = sequelize.Sequelize.Op
   class User extends Model { }
   User.init({
     name: {
@@ -32,17 +31,9 @@ module.exports = (sequelize, DataTypes) => {
           args: true,
           msg: `email can not be null`
         },
-        isUnique() {
-          return User.findOne({
-            where: {
-              [Op.and]: [{ email: this.email }, { id: { [Op.ne]: this.id } }]
-            }
-          })
-            .then(found => {
-              if (found) {
-                throw new Error(`email already exists`)
-              }
-            })
+        isEmail: {
+          args: true,
+          msg: `invalid email format`
         }
       }
     },
@@ -102,6 +93,9 @@ module.exports = (sequelize, DataTypes) => {
           msg: `bio can not be null`
         }
       }
+    },
+    profilePicture: {
+      type: DataTypes.STRING
     }
   }, {
     sequelize,

@@ -35,9 +35,7 @@ class UserController {
                     })
                 }
             })
-            .catch(err => {
-                next(err)
-            })
+            .catch(next)
     }
     static register(req, res, next) {
         let { name, email, password, age, gender, bio } = req.body
@@ -51,7 +49,7 @@ class UserController {
                         message: 'user already exists'
                     })
                 } else {
-                    User.create(newUser)
+                    return User.create(newUser)
                         .then(newUser => {
                             let payload = {
                                 id: newUser.id,
@@ -73,9 +71,7 @@ class UserController {
                         })
                 }
             })
-            .catch(err => {
-                next(err)
-            })
+            .catch(next)
     }
 }
 
