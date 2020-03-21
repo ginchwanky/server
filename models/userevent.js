@@ -26,9 +26,33 @@ module.exports = (sequelize, DataTypes) => {
         notNull: {
           args: true,
           msg: `payment can not be null`
+        },
+        min: {
+          args: 1,
+          msg: `minimum payment is 1`
         }
       }
-    }
+    },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: `Date can't be empty, please fill the due_date`
+        },
+        notNull: {
+          args: true,
+          msg: `Date is still null`
+        },
+        futureDate(value) {
+          const dateUser = new Date(value)
+          if (dateUser < new Date()) {
+            throw new Error(`choose future date`)
+          }
+        }
+      }
+    },
   }, {
     sequelize
   });

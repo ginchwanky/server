@@ -115,11 +115,13 @@ describe('Events Routes', () => {
           .send({
             name: 'kondangan kuy',
             desc: 'temenin dungs',
-            date: '2020-07-28',
+            date: '2018-06-07',
             numOfRent: 0,
           })
           .end((err, response) => {
             expect(err).toBe(null);
+            console.log(response.body);
+            
             expect(response.body).toHaveProperty(
               "errors",
               expect.arrayContaining(["minimum person is 1"])
