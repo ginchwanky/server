@@ -20,7 +20,7 @@ class EventController {
     static updateEvent(req, res, next) {
         Event.update({
             name: req.body.name,
-            statusEvent: 'pending',
+            statusEvent: req.body.statusEvent,
             description: req.body.desc,
             date: req.body.date,
             numOfRent: req.body.numOfRent,
