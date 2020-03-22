@@ -249,6 +249,13 @@ login user
  
     `headers: access_token`
     *perlu token ya ini
+
+    ` name: req.body.name,
+            statusEvent: 'pending',
+            description: req.body.desc,
+            date: req.body.date,
+            numOfRent: req.body.numOfRent,
+            UserId: currentUserId`
    **Optional:**
  
    `none`
@@ -329,7 +336,7 @@ login user
 
 * **URL**
 
-  /product/:id
+  /events/:id
 
   * **Method:**
 
@@ -341,6 +348,12 @@ login user
    **Required:**
  
     `headers: access_token`
+
+    `  name: req.body.name,
+            statusEvent: req.body.statusEvent,
+            description: req.body.desc,
+            date: req.body.date,
+            numOfRent: req.body.numOfRent,`
 
    **Optional:**
  
@@ -398,6 +411,10 @@ login user
    **Required:**
  
     `headers: access_token`
+    ` UserId: currentUserId,
+      EventId: req.body.EventId,
+      payment: req.body.payment,
+      date: tanggal,`
 
    **Optional:**
  
@@ -561,6 +578,10 @@ login user
    **Required:**
  
     `headers: token`
+    ` statusPayment: req.body.statusPayment,
+      payment: req.body.payment
+      EventId: req.params.EventId,
+      UserId: req.body.UserId`
 
    **Optional:**
  
@@ -601,7 +622,9 @@ login user
 
 
    **Required:**
- 
+    ` statusApplicant: req.body.statusApplicant,
+      EventId: req.params.EventId,
+      UserId: req.body.UserId`
 
    **Optional:**
  
