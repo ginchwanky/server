@@ -16,10 +16,7 @@ class EventController {
         .then( data =>{
             console.log(data.length);
             if (data.length > 0) {
-                throw new Error({
-                    message: 'you have reservation at the same date',
-                    status: 500
-                })
+                throw new Error('you have reservation at the same date')
             }else{
                 return UserEvent.create({
                     UserId: currentUserId,
@@ -33,35 +30,9 @@ class EventController {
 
         })
         .then( newData =>{
-            res.status(200).json(newData)
+            res.status(201).json(newData)
         })
-        .catch(next) 
-
-        // console.log(req.body, '0787070', currentUserId);
-        // UserEvent.findOrCreate({
-        //     where:{
-        //         UserId: currentUserId,
-        //         EventId: req.body.EventId,
-        //         statusApplicant: false,
-        //         statusPayment: false,
-        //         payment: req.body.payment,
-        //         date: tanggal,
-        //     },
-        // })
-        // .then( data =>{
-        //     console.log(data[1], 'ini hasil data');
-        //     if(data[0].id){
-        //         res.status(201).json(data)
-
-        //     }else{
-        //         next({
-        //             name: 'you have reservation at the same date',
-        //             status: 500
-        //         })
-        //     }
-            
-        // })
-        // .catch(next)    
+        .catch(next)  
     }
 
     static updateApplicants (req, res, next){
@@ -86,10 +57,7 @@ class EventController {
                   })
             }else{
                 console.log('mask else');
-                throw new Error({
-                    status: 500,
-                    message: "you already have enough people"
-                })
+                throw new Error("you already have enough people")
             }
             
         })
@@ -105,7 +73,6 @@ class EventController {
     static updateEvent(req, res, next) {
       
       UserEvent.update({
-          statusApplicant: req.body.statusApplicant,
           statusPayment: req.body.statusPayment,
           payment: req.body.payment
         },{ where:{
@@ -120,7 +87,7 @@ class EventController {
     }
   
     static deleteEvent(req, res, next) {
-        
+
       UserEvent.destroy({
             where:{
                 id: req.params.id

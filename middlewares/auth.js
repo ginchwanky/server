@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken')
 
 authentication = (req, res, next) => {
     let decoded = jwt.verify(req.headers.access_token, process.env.SECRET)
-    console.log(decoded);
     User.findOne({ where: { id: decoded.id } })
         .then(user => {
             console.log(user);

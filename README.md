@@ -1,4 +1,4 @@
-# ecommerce-server
+# socialRent
 
 **registration**
 ----
