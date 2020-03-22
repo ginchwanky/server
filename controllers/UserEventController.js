@@ -4,38 +4,105 @@ class EventController {
 
     static createUserEvent(req, res, next) {
       const currentUserId = req.decoded.id
-      
-        let tanggal = new Date(req.body.date)
-        console.log(req.body, '0787070', currentUserId);
-        UserEvent.findOrCreate({
-            where:{
-                UserId: currentUserId,
-                EventId: req.body.EventId,
-                statusApplicant: false,
-                statusPayment: false,
-                payment: req.body.payment,
-                date: tanggal,
-            },
+      let tanggal = new Date(req.body.date)
+        
+      UserEvent.findAll({
+        include: [User, Event],
+        where:{
+            UserId: currentUserId,
+            date: tanggal,
+        }
         })
         .then( data =>{
-            console.log(data[1], 'ini hasil data');
-            if(data[0].id){
-                res.status(201).json(data)
-
-            }else{
-                next({
-                    name: 'you have reservation at the same date',
+            console.log(data.length);
+            if (data.length > 0) {
+                throw new Error({
+                    message: 'you have reservation at the same date',
                     status: 500
+                })
+            }else{
+                return UserEvent.create({
+                    UserId: currentUserId,
+                    EventId: req.body.EventId,
+                    statusApplicant: false,
+                    statusPayment: false,
+                    payment: req.body.payment,
+                    date: tanggal,
+                })
+            }
+
+        })
+        .then( newData =>{
+            res.status(200).json(newData)
+        })
+        .catch(next) 
+
+        // console.log(req.body, '0787070', currentUserId);
+        // UserEvent.findOrCreate({
+        //     where:{
+        //         UserId: currentUserId,
+        //         EventId: req.body.EventId,
+        //         statusApplicant: false,
+        //         statusPayment: false,
+        //         payment: req.body.payment,
+        //         date: tanggal,
+        //     },
+        // })
+        // .then( data =>{
+        //     console.log(data[1], 'ini hasil data');
+        //     if(data[0].id){
+        //         res.status(201).json(data)
+
+        //     }else{
+        //         next({
+        //             name: 'you have reservation at the same date',
+        //             status: 500
+        //         })
+        //     }
+            
+        // })
+        // .catch(next)    
+    }
+
+    static updateApplicants (req, res, next){
+
+        UserEvent.findAll({
+            include: [Event],
+            where:{
+                EventId: req.params.EventId,
+                statusApplicant: true
+            }
+        })
+        .then( data =>{
+            console.log('{}{}{  ini data', data.length);
+            if(data.length === 0 || data.length < data[0].Event.numOfRent){
+              
+                return UserEvent.update({
+                    statusApplicant: req.body.statusApplicant,
+                  },{ where:{
+                      EventId: req.params.EventId,
+                      UserId: req.body.UserId
+                  }, returning: true
+                  })
+            }else{
+                console.log('mask else');
+                throw new Error({
+                    status: 500,
+                    message: "you already have enough people"
                 })
             }
             
         })
-        .catch(next)    
+        .then( updated =>{
+            res.status(200).json(updated)
+        })
+        .catch(next) 
+        
+
     }
 
+    
     static updateEvent(req, res, next) {
-      // const currentUserId = req.decoded.id
-      const currentUserId = 1
       
       UserEvent.update({
           statusApplicant: req.body.statusApplicant,
@@ -53,6 +120,7 @@ class EventController {
     }
   
     static deleteEvent(req, res, next) {
+        
       UserEvent.destroy({
             where:{
                 id: req.params.id
@@ -65,7 +133,7 @@ class EventController {
     }
 
     static getEvent( req, res, next){
-        console.log(req.params.EventId);
+        // console.log(req.params.EventId);
         
         UserEvent.findAll({
             include: [User, Event],

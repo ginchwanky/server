@@ -6,6 +6,6 @@ const UserEventRoutes = require('./UserEventRoutes')
 
 router.use('/users', UserRoutes)
 router.use('/events', EventRoutes)
-router.use('/UserEvent', UserEventRoutes)
+router.use('/userEvent', UserEventRoutes)
 
 module.exports = router
