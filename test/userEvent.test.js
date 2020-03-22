@@ -7,6 +7,7 @@ const { checkPassword } = require('../helpers/hashPassword')
 const jwt = require('jsonwebtoken')
 const Op = sequelize.Sequelize.Op
 let access_token
+let access_token2
 let id_event
 let id_user
 let id_UserEvent
@@ -34,6 +35,30 @@ describe.only('UserEvent Routes', () => {
             }
               id_user = newUser.id
               access_token = jwt.sign(payload, process.env.SECRET)
+                // done()
+
+              return User.create({
+                name: "second",
+                email: "second@mail.com",
+                password: "second",
+                age: 22,
+                gender: "male",
+                bio: "talkative"
+            })
+            })
+            .then( secondUser =>{
+              let { name, email, password, age, gender, bio, id } = secondUser
+              let newUser = { name, email, password, age, gender, bio, id }
+              let payload = {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                age: newUser.age,
+                gender: newUser.gender,
+                bio: newUser.bio
+            }
+              // id_user = newUser.id
+              access_token2 = jwt.sign(payload, process.env.SECRET)
                 done()
             })
             .catch(err => {
@@ -45,7 +70,7 @@ describe.only('UserEvent Routes', () => {
         name: 'kondangan kuy',
         description: 'temenin dungs',
         date: '2020-07-28',
-        numOfRent: 2,
+        numOfRent: 1,
         UserId: id_user
       })
       .then( result =>{
@@ -80,7 +105,7 @@ describe.only('UserEvent Routes', () => {
    describe("create UserEvent success", () => {
     test("it should return new event object and status 201", done => {
       request(app)
-        .post("/UserEvent")
+        .post("/userEvent")
         .set('access_token', access_token)
         .send({
           EventId: id_event,
@@ -89,8 +114,8 @@ describe.only('UserEvent Routes', () => {
         })
         .end((err, response) => {
           expect(err).toBe(null);
-          id_UserEvent = response.body[0].id
-          expect(response.body[0]).toHaveProperty("payment", 300000);
+          id_UserEvent = response.body.id
+          expect(response.body).toHaveProperty("payment", 300000);
           expect(response.status).toBe(201);
           done();
         });
@@ -101,7 +126,7 @@ describe.only('UserEvent Routes', () => {
   describe("create UserEvent success", () => {
     test("it should return new event object and status 201", done => {
       request(app)
-        .post("/UserEvent")
+        .post("/userEvent")
         .set('access_token', access_token)
         .send({
           EventId: id_event,
@@ -121,10 +146,10 @@ describe.only('UserEvent Routes', () => {
   });
 
   // failed, same date
-  describe("create UserEvent failed", () => {
+  describe("create userEvent failed", () => {
     test("it should return error and status 500", done => {
       request(app)
-        .post("/UserEvent")
+        .post("/userEvent")
         .set('access_token', access_token)
         .send({
           EventId: id_event,
@@ -133,40 +158,100 @@ describe.only('UserEvent Routes', () => {
         })
         .end((err, response) => {
           expect(err).toBe(null);
-          expect(response.body).toHaveProperty("message", 'you have reservation at the same date');
+          expect(response.body).toHaveProperty("errors", ["you have reservation at the same date"]);
           expect(response.status).toBe(500);
           done();
         });
     });
   });
 
-   // update status
-   describe("create UserEvent failed", () => {
-    test("it should return error and status 500", done => {
+   // update status payyment
+   describe("update UserEvent success", () => {
+    test("it should object of array and status 200", done => {
       request(app)
-        .put(`/UserEvent/${id_event}`)
+        .put(`/userEvent/payments/${id_event}`)
         .set('access_token', access_token)
         .send({
-          statusApplicant: true,
           statusPayment: true,
           payment: 20000,
           UserId: id_user
         })
         .end((err, response) => {
           expect(err).toBe(null);
-          expect(response.body[1][0]).toHaveProperty("statusApplicant", true);
           expect(response.body[1][0]).toHaveProperty("statusPayment", true);
+          expect(response.body[1][0]).toHaveProperty("payment", 20000);
           expect(response.status).toBe(200);
           done();
         });
     });
   });
 
+     // update status applicants
+     describe("update UserEvent statusApplicant succes", () => {
+      test("it should object of array and status 200", done => {
+        request(app)
+          .put(`/userEvent/applicants/${id_event}`)
+          .set('access_token', access_token)
+          .send({
+            statusApplicant: true,
+            UserId: id_user
+          })
+          .end((err, response) => {
+            expect(err).toBe(null);
+            expect(response.body[1][0]).toHaveProperty("statusApplicant", true);
+            expect(response.status).toBe(200);
+            done();
+          });
+      });
+    });
+
+     // ReCreate UserEvent success to hit the next test error
+      describe("create UserEvent success", () => {
+        test("it should return new event object and status 201", done => {
+          request(app)
+            .post("/userEvent")
+            .set('access_token', access_token2)
+            .send({
+              EventId: id_event,
+              payment: 300000,
+              date: '2020-07-17'
+            })
+            .end((err, response) => {
+              expect(err).toBe(null);
+              id_UserEvent = response.body.id
+              expect(response.body).toHaveProperty("payment", 300000);
+              expect(response.status).toBe(201);
+              done();
+            });
+        });
+      });
+
+     // update status applicants arror
+     describe("update UserEvent statusApplicant failes", () => {
+      test("it should return event has enough people and status 200", done => {
+        request(app)
+          .put(`/userEvent/applicants/${id_event}`)
+          .set('access_token', access_token)
+          .send({
+            statusApplicant: true,
+            UserId: id_user
+          })
+          .end((err, response) => {
+            expect(err).toBe(null);
+            console.log(response.body, '{}{}{}{}{)*(*)(*()9070');
+  
+            expect(response.body).toHaveProperty("errors", ["you already have enough people"]);
+            expect(response.status).toBe(500);
+            done();
+          });
+      });
+    });
+
   // get an event success
   describe('Successfully get an event', () => {
     test(`should return array of events`, (done) => {
         request(app)
-            .get(`/UserEvent/${id_event}`)
+            .get(`/userEvent/${id_event}`)
             .end((err, response) => {
                 expect(err).toBe(null)
                 expect(response.body[0]).toHaveProperty("EventId", id_event);
@@ -180,7 +265,7 @@ describe.only('UserEvent Routes', () => {
   describe('Successful delete an event', () => {
     test(`should return array of events`, (done) => {
         request(app)
-            .delete(`/UserEvent/${id_UserEvent}`)
+            .delete(`/userEvent/${id_UserEvent}`)
             .set('access_token', access_token)
             .end((err, response) => {
                 expect(err).toBe(null)
