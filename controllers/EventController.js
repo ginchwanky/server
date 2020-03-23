@@ -35,13 +35,16 @@ class EventController {
             .catch(next)
     }
     static findAllEvent(req, res, next) {
-        Event.findAll()
+        Event.findAll({
+            include: [User]
+        })
             .then(data => {
                 res.status(200).json(data)
             })
             .catch(next)
     }
     static findOne(req, res, next) {
+        let detail
         Event.findOne({
             include: [User],
             where: {
@@ -49,7 +52,19 @@ class EventController {
             }
         })
             .then(data => {
-                res.status(200).json(data)
+                detail = data
+                return User.findOne({
+                    where:{
+                        id: data.UserId
+                    }
+                })
+            })
+            .then( newdata =>{
+                let detailEvent = {
+                    creator: newdata,
+                    event: detail
+                }
+                res.status(200).json(detailEvent)
             })
             .catch(next)
     }
