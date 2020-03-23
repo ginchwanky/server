@@ -10,13 +10,15 @@ class EventController {
             description: req.body.desc,
             date: req.body.date,
             numOfRent: req.body.numOfRent,
-            UserId: currentUserId
+            UserId: currentUserId,
+            location: req.body.location
         })
             .then(data => {
                 res.status(201).json(data)
             })
             .catch(next)
     }
+
     static updateEvent(req, res, next) {
         Event.update({
             name: req.body.name,
@@ -24,6 +26,7 @@ class EventController {
             description: req.body.desc,
             date: req.body.date,
             numOfRent: req.body.numOfRent,
+            location: req.body.location
         }, {
             where: {
                 id: req.params.id
@@ -34,6 +37,19 @@ class EventController {
             })
             .catch(next)
     }
+
+    static getEventHistory (req, res, next){
+        UserEvent.findAll({
+            where:{
+                UserId: req.params.UserId
+            }
+        })
+        .then( data =>{
+            res.status(200).json(data)
+        })
+        .catch(next) 
+    }
+
     static findAllEvent(req, res, next) {
         Event.findAll({
             include: [User]

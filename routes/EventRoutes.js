@@ -5,6 +5,7 @@ const { authentication, authorization } = require('../middlewares/auth')
 
 router.get('/', EventController.findAllEvent)
 router.get('/:id', EventController.findOne)
+router.get('/history/:UserId', EventController.getEventHistory)
 router.post('/', authentication, EventController.createEvent)
 router.put('/:id', authentication, authorization, EventController.updateEvent)
 router.delete('/:id', authentication, authorization,EventController.deleteEvent)
