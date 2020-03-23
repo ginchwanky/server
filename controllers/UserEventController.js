@@ -4,8 +4,7 @@ class EventController {
 
     static createUserEvent(req, res, next) {
       const currentUserId = req.decoded.id
-      let tanggal = new Date(req.body.date)
-        
+
       UserEvent.findAll({
         include: [User, Event],
         where:{
@@ -24,7 +23,7 @@ class EventController {
                     statusApplicant: false,
                     statusPayment: false,
                     payment: req.body.payment,
-                    date: tanggal,
+                    date: req.body.date,
                 })
             }
 
@@ -33,6 +32,19 @@ class EventController {
             res.status(201).json(newData)
         })
         .catch(next)  
+    }
+
+    static getUserHistory (req, res, next){
+        UserEvent.findAll({
+            include: [User, Event],
+            where:{
+                UserId: req.params.UserId
+            }
+        })
+        .then( data =>{
+            res.status(200).json(data)
+        })
+        .catch(next) 
     }
 
     static updateApplicants (req, res, next){
