@@ -12,12 +12,21 @@ class UserController {
                         let payload = {
                             id: user.id,
                             name: user.name,
-                            email: user.email
+                            email: user.email,
+                            age: user.age,
+                            gender: user.gender,
+                            bio: user.bio,
+                            profilePicture: user.profilePicture
                         }
                         let access_token = jwt.sign(payload, process.env.SECRET)
                         res.status(200).json({
                             message: 'Login Success!',
                             name: user.name,
+                            email: user.email,
+                            age: user.age,
+                            gender: user.gender,
+                            bio: user.bio,
+                            profilePicture: user.profilePicture,
                             access_token
                         })
                     } else {
@@ -57,12 +66,18 @@ class UserController {
                                 email: newUser.email,
                                 age: newUser.age,
                                 gender: newUser.gender,
-                                bio: newUser.bio
+                                bio: newUser.bio,
+                                profilePicture: newUser.profilePicture
                             }
                             let access_token = jwt.sign(payload, process.env.SECRET)
                             res.status(201).json({
                                 message: 'Register Success',
-                                name: newUser.name,
+                                name: user.name,
+                                email: user.email,
+                                age: user.age,
+                                gender: user.gender,
+                                bio: user.bio,
+                                profilePicture: user.profilePicture,
                                 access_token
                             })
                         })
