@@ -9,7 +9,7 @@ class EventController {
         include: [User, Event],
         where:{
             UserId: currentUserId,
-            date: tanggal,
+            date: req.body.date,
         }
         })
         .then( data =>{

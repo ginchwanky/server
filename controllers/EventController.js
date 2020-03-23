@@ -25,6 +25,7 @@ class EventController {
             description: req.body.desc,
             date: req.body.date,
             numOfRent: req.body.numOfRent,
+            location: req.body.location
         }, {
             where: {
                 id: req.params.id
