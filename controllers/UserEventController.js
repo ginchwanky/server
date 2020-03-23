@@ -24,7 +24,6 @@ class EventController {
                     statusPayment: false,
                     payment: req.body.payment,
                     date: req.body.date,
-                    location: req.body.location
                 })
             }
 

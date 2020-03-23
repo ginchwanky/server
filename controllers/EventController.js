@@ -10,7 +10,8 @@ class EventController {
             description: req.body.desc,
             date: req.body.date,
             numOfRent: req.body.numOfRent,
-            UserId: currentUserId
+            UserId: currentUserId,
+            location: req.body.location
         })
             .then(data => {
                 res.status(201).json(data)
