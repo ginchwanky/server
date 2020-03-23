@@ -39,7 +39,7 @@ class EventController {
     }
 
     static getEventHistory (req, res, next){
-        UserEvent.findAll({
+        Event.findAll({
             where:{
                 UserId: req.params.UserId
             }
