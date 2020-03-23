@@ -1,4 +1,4 @@
-const { Event, User, UserEvent } = require('../models')
+const { Event, User } = require('../models')
 
 class EventController {
     static createEvent(req, res, next) {
@@ -41,7 +41,7 @@ class EventController {
     static getEventHistory (req, res, next){
         Event.findAll({
             where:{
-                UserId: req.params.UserId
+                UserId: req.decoded.id
             }
         })
         .then( data =>{
