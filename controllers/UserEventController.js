@@ -58,10 +58,14 @@ class EventController {
             }
         })
         .then( data =>{
-            // console.log('{}{}{  ini data', data.length);
-            numOfRent = data[0].Event.numOfRent
+            if (data[0]) {
+                numOfRent = data[0].Event.numOfRent
+            }
+            
+            console.log('{}{}{  ini data', data.length);
             jumlahApplicants = data.length
-            if(data.length === 0 || data.length < data[0].Event.numOfRent){
+            if(data.length === 0 || data.length < numOfRent){
+              console.log('masuk if');
               
                 return UserEvent.update({
                     statusApplicant: req.body.statusApplicant,
@@ -71,15 +75,16 @@ class EventController {
                   }, returning: true
                   })
             }else{
-                // console.log('mask else');
                 throw new Error("you already have enough people")
             }
             
         })
         .then( updated =>{
+            
             jumlahApplicants+= 1
             if(numOfRent){
                 if (jumlahApplicants === numOfRent) {
+                    // console.log('mask then 2');
                     Event.update({
                         statusEvent: 'onGoing',
                     }, {
@@ -111,11 +116,10 @@ class EventController {
             }
         })
         .then( data =>{
-            numOfRent = data[0].Event.numOfRent
+            if (data[0]) {
+                numOfRent = data[0].Event.numOfRent
+            }
             paylength = data.length
-            console.log(data, '787969769');
-            
-            // res.status(200).json(data)
 
             return UserEvent.update({
                 statusPayment: req.body.statusPayment,
