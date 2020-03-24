@@ -99,17 +99,49 @@ class EventController {
     
     static updateEvent(req, res, next) {
       
-      UserEvent.update({
-          statusPayment: req.body.statusPayment,
-          payment: req.body.payment
-        },{ where:{
-            EventId: req.params.EventId,
-            UserId: req.body.UserId
-        }, returning: true
+    
+        let numOfRent
+        let paylength
+        
+        UserEvent.findAll({
+            include: [Event],
+            where:{
+                EventId: req.params.EventId,
+                statusPayment: true
+            }
         })
         .then( data =>{
-            res.status(200).json(data)
+            numOfRent = data[0].Event.numOfRent
+            paylength = data.length
+            console.log(data, '787969769');
+            
+            // res.status(200).json(data)
+
+            return UserEvent.update({
+                statusPayment: req.body.statusPayment,
+                payment: req.body.payment
+            },{ where:{
+                EventId: req.params.EventId,
+                UserId: req.body.UserId
+            }, returning: true
+            })
         })
+        .then( newData =>{
+            paylength += 1
+            if(numOfRent){
+                if(numOfRent === paylength){
+                    Event.update({
+                        statusEvent: 'complete',
+                    }, {
+                        where: {
+                            id: req.params.EventId
+                        }, returning: true
+                    })
+                }
+            }
+
+            res.status(200).json(newData)
+        } )
         .catch(next)
     }
   
