@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
 const Op = sequelize.Sequelize.Op
 let access_token
 let id_event
-
+let id_user
 describe('Events Routes', () => {
     beforeAll(done => {
         User.create({
@@ -31,6 +31,7 @@ describe('Events Routes', () => {
                 gender: newUser.gender,
                 bio: newUser.bio
             }
+            id_user = newUser.id
               access_token = jwt.sign(payload, process.env.SECRET)
                 done()
             })
@@ -189,6 +190,20 @@ describe('Events Routes', () => {
         })
     })
 
+      //get eventhistory
+      describe('Successful get user event history', () => {
+        test(`should return array of events`, (done) => {
+            request(app)
+                .get(`events/history/${id_u}`)
+                .end((err, response) => {
+                    expect(err).toBe(null)
+                    expect(response.body).toEqual(expect.any(Array))
+                    expect(response.status).toBe(200);
+                    done()
+                })
+        })
+    })
+
       //get one event success
       describe('Successful get all events', () => {
         test(`should return array of events`, (done) => {
@@ -196,7 +211,7 @@ describe('Events Routes', () => {
                 .get(`/events/${id_event}`)
                 .end((err, response) => {
                     expect(err).toBe(null)
-                    expect(response.body).toHaveProperty("name", "gajadi kondangan");
+                    expect(response.body.event).toHaveProperty("name", "gajadi kondangan");
                     expect(response.status).toBe(200);
                     done()
                 })

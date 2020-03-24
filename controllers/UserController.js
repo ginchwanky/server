@@ -71,19 +71,23 @@ class UserController {
                                 profilePicture: newUser.profilePicture
                             }
                             let access_token = jwt.sign(payload, process.env.SECRET)
+                            console.log('masuk sini');
+                            
                             res.status(201).json({
                                 message: 'Register Success',
-                                name: user.name,
-                                email: user.email,
-                                age: user.age,
-                                gender: user.gender,
-                                bio: user.bio,
-                                profilePicture: user.profilePicture,
+                                id: newUser.id,
+                                name: newUser.name,
+                                email: newUser.email,
+                                age: newUser.age,
+                                gender: newUser.gender,
+                                bio: newUser.bio,
+                                profilePicture: newUser.profilePicture,
                                 access_token,
-                                id: user.id
                             })
                         })
                         .catch(err => {
+                            console.log('atau ke catch');
+                            
                             next(err)
                         })
                 }
