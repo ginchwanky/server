@@ -2,6 +2,7 @@ const { Event, User } = require('../models')
 
 class EventController {
     static createEvent(req, res, next) {
+        console.log('masuk controller>>>>>>>>>>>>>>>>')
         // console.log(req.body);
         const currentUserId = req.decoded.id
         Event.create({
