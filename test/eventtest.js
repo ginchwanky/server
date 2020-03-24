@@ -9,6 +9,7 @@ const Op = sequelize.Sequelize.Op
 let access_token
 let id_event
 let id_user
+
 describe('Events Routes', () => {
     beforeAll(done => {
         User.create({
@@ -31,7 +32,7 @@ describe('Events Routes', () => {
                 gender: newUser.gender,
                 bio: newUser.bio
             }
-            id_user = newUser.id
+            id_user = id
               access_token = jwt.sign(payload, process.env.SECRET)
                 done()
             })
@@ -121,8 +122,6 @@ describe('Events Routes', () => {
           })
           .end((err, response) => {
             expect(err).toBe(null);
-            console.log(response.body);
-            
             expect(response.body).toHaveProperty(
               "errors",
               expect.arrayContaining(["minimum person is 1"])
@@ -176,7 +175,7 @@ describe('Events Routes', () => {
       });
     });
 
-    //get event success
+    //get one event success
     describe('Successful get all events', () => {
         test(`should return array of events`, (done) => {
             request(app)
@@ -194,9 +193,10 @@ describe('Events Routes', () => {
       describe('Successful get user event history', () => {
         test(`should return array of events`, (done) => {
             request(app)
-                .get(`events/history/${id_u}`)
+                .get(`/events/history/${id_user}`)
                 .end((err, response) => {
                     expect(err).toBe(null)
+                    console.log(response.body);
                     expect(response.body).toEqual(expect.any(Array))
                     expect(response.status).toBe(200);
                     done()
