@@ -78,14 +78,16 @@ class EventController {
         })
         .then( updated =>{
             jumlahApplicants+= 1
-            if (jumlahApplicants === numOfRent) {
-                Event.update({
-                    statusEvent: 'onGoing',
-                }, {
-                    where: {
-                        id: req.params.EventId
-                    }, returning: true
-                })
+            if(numOfRent){
+                if (jumlahApplicants === numOfRent) {
+                    Event.update({
+                        statusEvent: 'onGoing',
+                    }, {
+                        where: {
+                            id: req.params.EventId
+                        }, returning: true
+                    })
+                }
             }
             res.status(200).json(updated)
         })
