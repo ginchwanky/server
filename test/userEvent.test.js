@@ -11,6 +11,7 @@ let access_token2
 let id_event
 let id_user
 let id_UserEvent
+let sameDate
 describe.only('UserEvent Routes', () => {
     beforeAll(done => {
         User.create({
@@ -115,6 +116,7 @@ describe.only('UserEvent Routes', () => {
         .end((err, response) => {
           expect(err).toBe(null);
           id_UserEvent = response.body.id
+          sameDate = response.body.date
           expect(response.body).toHaveProperty("payment", 300000);
           expect(response.status).toBe(201);
           done();
@@ -154,7 +156,7 @@ describe.only('UserEvent Routes', () => {
         .send({
           EventId: id_event,
           payment: 300000,
-          date: '2020-07-17'
+          date: sameDate
         })
         .end((err, response) => {
           expect(err).toBe(null);
@@ -260,6 +262,20 @@ describe.only('UserEvent Routes', () => {
             })
     })
   })
+
+    // get user history
+    describe('Successfully get an event', () => {
+      test(`should return array of events`, (done) => {
+          request(app)
+              .get(`/userEvent/history/${id_user}`)
+              .end((err, response) => {
+                  expect(err).toBe(null)
+                  expect(response.body).toEqual(expect.any(Array))
+                  expect(response.status).toBe(200);
+                  done()
+              })
+      })
+    })
 
   // delete userEvent
   describe('Successful delete an event', () => {
