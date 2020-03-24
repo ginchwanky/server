@@ -48,7 +48,8 @@ class EventController {
     }
 
     static updateApplicants (req, res, next){
-
+        let numOfRent
+        let jumlahApplicants
         UserEvent.findAll({
             include: [Event],
             where:{
@@ -57,7 +58,9 @@ class EventController {
             }
         })
         .then( data =>{
-            console.log('{}{}{  ini data', data.length);
+            // console.log('{}{}{  ini data', data.length);
+            numOfRent = data[0].Event.numOfRent
+            jumlahApplicants = data.length
             if(data.length === 0 || data.length < data[0].Event.numOfRent){
               
                 return UserEvent.update({
@@ -68,12 +71,22 @@ class EventController {
                   }, returning: true
                   })
             }else{
-                console.log('mask else');
+                // console.log('mask else');
                 throw new Error("you already have enough people")
             }
             
         })
         .then( updated =>{
+            jumlahApplicants+= 1
+            if (jumlahApplicants === numOfRent) {
+                Event.update({
+                    statusEvent: 'onGoing',
+                }, {
+                    where: {
+                        id: req.params.EventId
+                    }, returning: true
+                })
+            }
             res.status(200).json(updated)
         })
         .catch(next) 
