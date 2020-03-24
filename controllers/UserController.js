@@ -27,7 +27,8 @@ class UserController {
                             gender: user.gender,
                             bio: user.bio,
                             profilePicture: user.profilePicture,
-                            access_token
+                            access_token,
+                            id: user.id
                         })
                     } else {
                         next({
@@ -78,7 +79,8 @@ class UserController {
                                 gender: user.gender,
                                 bio: user.bio,
                                 profilePicture: user.profilePicture,
-                                access_token
+                                access_token,
+                                id: user.id
                             })
                         })
                         .catch(err => {
