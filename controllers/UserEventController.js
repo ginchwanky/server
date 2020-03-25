@@ -1,5 +1,40 @@
 const { Event, User, UserEvent } = require("../models");
 
+const { Expo } = require('expo-server-sdk')
+const expo = new Expo();
+let savedPushTokens = [];
+const handlePushTokens = ({ bodyNotif, pushToken }) => {
+  savedPushTokens.push(pushToken)
+  let notifications = [];
+  for (let pushToken of savedPushTokens) {
+    if (!Expo.isExpoPushToken(pushToken)) {
+      console.error(`Push token ${pushToken} is not a valid Expo push token`);
+      continue;
+    }
+
+    notifications.push({
+      to: pushToken,
+      sound: "default",
+      title: "SocialRent",
+      body: bodyNotif
+    });
+  }
+
+  let chunks = expo.chunkPushNotifications(notifications);
+
+  (async () => {
+    for (let chunk of chunks) {
+      try {
+        let receipts = await expo.sendPushNotificationsAsync(chunk);
+        console.log(receipts);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  })();
+};
+
+
 class EventController {
   static createUserEvent(req, res, next) {
     const currentUserId = req.decoded.id;
@@ -16,6 +51,7 @@ class EventController {
         if (data.length > 0) {
           throw new Error("you have reservation at the same date");
         } else {
+          handlePushTokens(req.body)
           return UserEvent.create({
             UserId: currentUserId,
             EventId: req.body.EventId,
