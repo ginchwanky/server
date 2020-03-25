@@ -1,5 +1,39 @@
 const { Event, User } = require('../models')
 
+const { Expo } = require('expo-server-sdk')
+const expo = new Expo();
+let savedPushTokens = [];
+const handlePushTokens = ({ bodyNotif, pushToken }) => {
+    savedPushTokens.push(pushToken)
+    let notifications = [];
+    for (let pushToken of savedPushTokens) {
+        if (!Expo.isExpoPushToken(pushToken)) {
+            console.error(`Push token ${pushToken} is not a valid Expo push token`);
+            continue;
+        }
+
+        notifications.push({
+            to: pushToken,
+            sound: "default",
+            title: "SocialRent",
+            body: bodyNotif
+        });
+    }
+
+    let chunks = expo.chunkPushNotifications(notifications);
+
+    (async () => {
+        for (let chunk of chunks) {
+            try {
+                let receipts = await expo.sendPushNotificationsAsync(chunk);
+                console.log(receipts);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    })();
+};
+
 class EventController {
     static createEvent(req, res, next) {
         // console.log(req.body);
@@ -17,6 +51,9 @@ class EventController {
                 res.status(201).json(data)
             })
             .catch(next)
+            .finally(() => {
+                handlePushTokens(req.body)
+            })
     }
 
     static updateEvent(req, res, next) {
@@ -38,16 +75,16 @@ class EventController {
             .catch(next)
     }
 
-    static getEventHistory (req, res, next){
+    static getEventHistory(req, res, next) {
         Event.findAll({
-            where:{
+            where: {
                 UserId: req.params.userId
             }
         })
-        .then( data =>{
-            res.status(200).json(data)
-        })
-        .catch(next) 
+            .then(data => {
+                res.status(200).json(data)
+            })
+            .catch(next)
     }
 
     static findAllEvent(req, res, next) {
@@ -70,12 +107,12 @@ class EventController {
             .then(data => {
                 detail = data
                 return User.findOne({
-                    where:{
+                    where: {
                         id: data.UserId
                     }
                 })
             })
-            .then( newdata =>{
+            .then(newdata => {
                 let detailEvent = {
                     creator: newdata,
                     event: detail

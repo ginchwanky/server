@@ -1,4 +1,5 @@
 const { Event, User, UserEvent } = require("../models");
+
 const { Expo } = require('expo-server-sdk')
 const expo = new Expo();
 let savedPushTokens = [];
