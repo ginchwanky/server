@@ -53,6 +53,8 @@ class EventController {
             .catch(next)
             .finally(() => {
                 handlePushTokens(req.body)
+                console.log(req.body);
+                
             })
     }
 
