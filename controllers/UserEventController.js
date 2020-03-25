@@ -34,6 +34,7 @@ const handlePushTokens = ({ bodyNotif, pushToken }) => {
   })();
 };
 
+
 class EventController {
   static createUserEvent(req, res, next) {
     const currentUserId = req.decoded.id;
