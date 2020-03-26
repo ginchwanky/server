@@ -19,7 +19,9 @@ describe.only('UserEvent Routes', () => {
             password: "dummy",
             age: 22,
             gender: "male",
-            bio: "talkative"
+            bio: "talkative",
+            pushToken: 'ExponentPushToken[wJRUhrM2B84ZfEdcZtWtH_]',
+            bodyNotif: `There's new event for you`
         })
             .then(result => {
               // console.log(result.name);
@@ -131,7 +133,9 @@ describe.only('UserEvent Routes', () => {
         .send({
           EventId: id_event,
           payment: 0,
-          date: '2018-07-17'
+          date: '2018-07-17',
+          pushToken: 'ExponentPushToken[wJRUhrM2B84ZfEdcZtWtH_]',
+          bodyNotif: `There's new event for you`
         })
         .end((err, response) => {
           expect(err).toBe(null);
@@ -226,7 +230,7 @@ describe.only('UserEvent Routes', () => {
         });
       });
 
-     // update status applicants arror
+     // update status applicants error
      describe("update UserEvent statusApplicant failes", () => {
       test("it should return event has enough people and status 200", done => {
         request(app)
@@ -238,14 +242,27 @@ describe.only('UserEvent Routes', () => {
           })
           .end((err, response) => {
             expect(err).toBe(null);
-            console.log(response.body, '{}{}{}{}{)*(*)(*()9070');
-  
             expect(response.body).toHaveProperty("errors", ["you already have enough people"]);
             expect(response.status).toBe(500);
             done();
           });
       });
     });
+
+    //get UserEvent history
+    describe('Successful get user event history', () => {
+      test(`should return array of events`, (done) => {
+          request(app)
+              .get(`/userEvent/history/${id_user}`)
+              .end((err, response) => {
+                  expect(err).toBe(null)
+                  console.log(response.body, '{}{}{}{}{)*(*)(*()9070');
+                  expect(response.body).toEqual(expect.any(Array))
+                  expect(response.status).toBe(200);
+                  done()
+              })
+      })
+  })
 
   // get an event success
   describe('Successfully get an event', () => {

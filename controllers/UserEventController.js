@@ -26,7 +26,7 @@ const handlePushTokens = ({ bodyNotif, pushToken }) => {
     for (let chunk of chunks) {
       try {
         let receipts = await expo.sendPushNotificationsAsync(chunk);
-        console.log(receipts);
+        // console.log(receipts);
       } catch (error) {
         console.error(error);
       }
@@ -38,16 +38,18 @@ const handlePushTokens = ({ bodyNotif, pushToken }) => {
 class EventController {
   static createUserEvent(req, res, next) {
     const currentUserId = req.decoded.id;
+    let date = req.body.date
+    let newDate = (date.length == 10) ? new Date(req.body.date) : date
 
     UserEvent.findAll({
       include: [User, Event],
       where: {
         UserId: currentUserId,
-        date: req.body.date
+        date: newDate
       }
     })
       .then(data => {
-        console.log(data.length);
+
         if (data.length > 0) {
           throw new Error("you have reservation at the same date");
         } else {

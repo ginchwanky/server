@@ -9,6 +9,8 @@ const Op = sequelize.Sequelize.Op
 let access_token
 let id_event
 let id_user
+let access_token2
+let id_user2
 
 describe('Events Routes', () => {
     beforeAll(done => {
@@ -34,6 +36,29 @@ describe('Events Routes', () => {
             }
             id_user = id
               access_token = jwt.sign(payload, process.env.SECRET)
+                // done()
+            })
+            return User.create({
+              name: "second",
+              email: "second@mail.com",
+              password: "second",
+              age: 22,
+              gender: "male",
+              bio: "talkative"
+          })
+            .then( secondUser => {
+              let { name, email, password, age, gender, bio, id } = secondUser
+              let newUser = { name, email, password, age, gender, bio, id }
+              let payload = {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                age: newUser.age,
+                gender: newUser.gender,
+                bio: newUser.bio
+            }
+              id_user2 = newUser.id
+              access_token2 = jwt.sign(payload, process.env.SECRET)
                 done()
             })
             .catch(err => {
@@ -70,6 +95,8 @@ describe('Events Routes', () => {
             desc: 'temenin dungs',
             date: '2020-07-28',
             numOfRent: 2,
+            pushToken: 'ExponentPushToken[wJRUhrM2B84ZfEdcZtWtH_]',
+            bodyNotif: `There's new event for you`
           })
           .end((err, response) => {
             expect(err).toBe(null);
@@ -217,6 +244,24 @@ describe('Events Routes', () => {
                 })
         })
     })
+
+    // failed delete event unauthorized
+    describe('failed delete an event', () => {
+      test(`should return array of events`, (done) => {
+          request(app)
+              .delete(`/events/${id_event}`)
+              .set('access_token', access_token2)
+              .end((err, response) => {
+                  expect(err).toBe(null)
+                  expect(response.body).toHaveProperty(
+                    "errors",
+                    expect.arrayContaining(["you are not authorized"])
+                  );
+                  expect(response.status).toBe(403);
+                  done()
+              })
+      })
+  })
 
     describe('Successful delete an event', () => {
       test(`should return array of events`, (done) => {
